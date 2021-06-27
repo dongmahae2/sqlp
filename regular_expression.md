@@ -60,3 +60,50 @@ SELECT REGEXP_SUBSTR('aaaa', 'a{2,}?') -- aa    nonegreedy 방식
      , REGEXP_SUBSTR('aaaa', 'a{2,}')  -- aaaa  greedy 방식
   FROM DUAL;
 ```
+
+
+# 정규 표현식 조건과 함수
+## REGEXP_LIKE
+```SQL
+-- 패턴과 일치하면 true 아니면 false 
+SELECT first_name
+     , last_name
+  FROM HR.employees
+ WHERE REGEXP_LIKE(first_name, '^Ste(v|ph)en$');
+```
+
+## REGEXP_REPLACE
+```SQL
+-- 일치한 패턴을 지정한 문자열로 변경하여 반환
+SELECT phone_number                                                             -- 650.121.2004
+     , REGEXP_REPLACE(phone_number,
+                    , '([[:digit:]]{3})\.([[:digit:]]{3})\.([[:digit:]]{4}))'
+                    , '(\1) \2-\3') AS phone_number2                            -- (650) 121-2004
+  FROM HR.employees
+ WHERE REGEXP_LIKE(first_name, '^Ste(v|ph)en$');
+```
+
+## REGEXP_SUBSTR
+```SQL
+-- 일치한 패턴을 반환
+SELECT REGEXP_SUBSTR('http://www.example.com/products')
+     , 'http://([[:alnum:]]+\.?){3,4}/?') AS url            -- http://www.example.com/
+  FROM DUAL
+```
+
+## REGEXP_INSTR
+```SQL
+-- 일치한 패턴의 시작 위치를 정수로 반환한다.
+SELECT REGEXP_INSTR('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 1) AS C1    -- 1
+     , REGEXP_INSTR('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 2) AS C2    -- 4
+     , REGEXP_INSTR('1234567890', '(123)(4(56)(78))', 1, 1, 0, 'i', 4) AS C3    -- 7
+  FROM DUAL
+```
+
+## REGEXP_COUNT
+```SQL
+-- 일치한 패턴의 횟수를 반환한다.
+SELECT REGEXP_INSTR('123123123123123', '123', 1) AS C1  -- 5
+     , REGEXP_INSTR('123123123123', '123', 3)    AS C2  -- 3
+  FROM DUAL
+```
